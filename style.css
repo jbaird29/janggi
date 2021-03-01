@@ -1,0 +1,75 @@
+.board {
+  display: table;
+}
+
+.row {
+  display: table-row;
+}
+
+.square {
+  display: table-cell;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.square-img {
+  width: 60px;
+  vertical-align: middle;
+  z-index: 1;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.piece {
+  width: 45px;
+  z-index: 2;
+  position: absolute;
+  top: 5px;
+  left: 8px;
+}
+
+/* Image Rotating */
+.square-img-left-edge {
+  transform: rotate(90deg);
+}
+.square-img-right-edge {
+  transform: rotate(-90deg);
+}
+.square-img-top-edge {
+  transform: rotate(180deg);
+}
+.square-img-top-right-corner {
+  transform: rotate(180deg);
+}
+.square-img-top-left-corner {
+  transform: rotate(90deg);
+}
+.square-img-bottom-right-corner {
+  transform: rotate(-90deg);
+}
+.square-img-top-left-palace-edge {
+  transform: rotate(180deg) scaleX(-1);
+}
+.square-img-top-right-palace-edge {
+  transform: rotate(180deg);
+}
+.square-img-top-left-palace {
+  transform: rotate(0deg);
+}
+.square-img-top-right-palace {
+  transform: rotate(-90deg);
+}
+.square-img-bottom-left-palace-edge {
+  transform: rotate(0deg);
+}
+.square-img-bottom-right-palace-edge {
+  transform: scaleX(-1);
+}
+.square-img-bottom-left-palace {
+  transform: rotate(90deg);
+}
+.square-img-bottom-right-palace {
+  transform: rotate(180deg);
+}

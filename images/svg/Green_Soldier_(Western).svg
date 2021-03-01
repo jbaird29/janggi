@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="101.55641"
+   height="101.54229"
+   id="svg2">
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     d="M 100.5528,71.323081 71.444076,100.49996 30.229932,100.54816 1.0530478,71.439448 1.0048468,30.2253 30.113565,1.0484167 71.327708,1.0002161 100.50459,30.108932 z"
+     id="path2991"
+     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+  <path
+     d="m 77.520989,82.468586 c -1.87241,-7.847862 -7.05361,-14.429368 -14.02479,-18.065811 4.45731,-3.680279 7.28972,-9.234696 7.28972,-15.451035 0,-8.808843 -5.72194,-16.264779 -13.62863,-18.937402 0.59281,-1.061124 0.95087,-2.263791 0.95087,-3.565618 0,-4.066903 -3.3021,-7.36893 -7.36896,-7.36893 -4.06687,0 -7.36894,3.302027 -7.36894,7.36893 0,1.309016 0.43121,2.500392 1.0301,3.565618 -7.93428,2.657039 -13.62863,10.108816 -13.62863,18.937402 0,6.216339 2.85434,11.770756 7.28972,15.451035 -6.97121,3.636443 -12.152411,10.217949 -14.024791,18.065811 l 53.484331,0 z"
+     id="path3905-5"
+     style="color:#000000;fill:none;stroke:#0d00b4;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+</svg>
