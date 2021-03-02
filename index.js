@@ -42,5 +42,3 @@ const makeMove = (start, end) => {
 
 const game = new JanggiGame()
 game.renderPieces()
-console.log(game.board)
-console.log(game.board['a1'].getValidMoves())
