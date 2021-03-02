@@ -174,8 +174,30 @@ class Piece {
     return moves
   }
 
-  horseMoves() {
-    return 'horse'
+  horseMoves(board) {
+    const start = this.square
+    const moves = []
+    // loop through the squares 1 up, 1 down, 1 left, 1 right
+    const verticies = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    verticies.forEach(pair => {
+      const [vert, horz] = pair;
+      const square = shift(start, vert, horz)
+      // # if square at 1 step up/down/left/right is empty, continue
+      if (square && this.isEmpty(board[square])) {
+        // # from 1 up/down/left/right, do a positive and negative jump
+        const posJump = [vert * 2 + horz, horz * 2 + vert]
+        const negJump = [vert * 2 - horz, horz * 2 - vert]
+        const jumps = [posJump, negJump]
+        jumps.forEach(pair => {
+          const [vert, horz] = pair;
+          const square = shift(start, vert, horz)
+          if (square && this.isEmptyOrEnemy(board[square])) {
+            moves.push(square)
+          }
+        })
+      }
+    })
+    return moves
   }
 
   renderSquareShading(board) {
