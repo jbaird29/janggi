@@ -10,7 +10,10 @@ document.querySelectorAll('.square').forEach(square => {
     if (!start && !end) {
       start = square;
       moveEl.textContent = `Start square is ${square}. Select end square.`;
+      const piece = game.board[start]
+      piece ? piece.renderSquareShading(game.board) : null
     } else if (!end) {
+      game.clearSquareShading()
       end = square;
       const {valid, response} = game.makeMove(start, end)
       if (valid) {

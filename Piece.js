@@ -79,11 +79,11 @@ class Piece {
     if (getPalaceCorners().includes(start)) {
       const squareColor = getPalaceCorners('red').includes(start) ? 'red' : 'blue'
       const center = getPalaceCenters(squareColor)
-      const mirror = mirror(start)
+      const mirror = mirrorSquare(start)
       const centerIsCannon = board[center] !== null && board[center].type === 'cannon'
       const mirrorIsCannon = board[mirror] !== null && board[mirror].type === 'cannon'
       if (!centerIsCannon && !mirrorIsCannon) {
-        if (board[center] !== null && self.isEmptyOrEnemy(board[mirror])) {
+        if (board[center] !== null && this.isEmptyOrEnemy(board[mirror])) {
           moves.push(mirror)
         }
       }
@@ -101,5 +101,14 @@ class Piece {
 
   horseMoves() {
     return 'horse'
+  }
+
+  renderSquareShading(board) {
+    const moves = this.getValidMoves(board)
+    moves.forEach(square => {
+      const squareEl = document.getElementById(square)
+      const imgageEl = squareEl.childNodes[0]
+      imgageEl.classList.add('square-img-highlight')
+    })
   }
 }

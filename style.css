@@ -22,6 +22,10 @@
   left: 0;
 }
 
+.square-img-highlight {
+  opacity: 0.5;
+}
+
 .piece {
   width: 45px;
   z-index: 2;

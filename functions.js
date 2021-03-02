@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------
+// Helper functions for altering algebraic square notation
+// ---------------------------------------------------------------
 const nextChar = (c) => { 
   return String.fromCharCode(c.charCodeAt(0) + 1); 
 }
@@ -25,7 +28,7 @@ const shiftDir = (square, direction) => {
   if (direction === 'down') return shift(square, -1, 0);
 }
 
-const mirror = (square) => {
+const mirrorSquare = (square) => {
   if (!['d1', 'f1', 'd3', 'f3', 'd8', 'f8', 'd10', 'f10'].includes(square)) {
     return false
   }
@@ -37,6 +40,9 @@ const mirror = (square) => {
   return mirror
 }
 
+// ---------------------------------------------------------------
+// Helper functions for getting certain palaces squares
+// ---------------------------------------------------------------
 const getPalace = (color=null) => {
   if (color === 'red') {
     return ['d1', 'e1', 'f1', 'd2', 'e2', 'f2', 'd3', 'e3', 'f3']

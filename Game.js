@@ -102,6 +102,14 @@ class JanggiGame {
     }
   }
 
+  clearSquareShading() {
+    for (const square in this.board) { 
+      const squareEl = document.getElementById(square)
+      const imgageEl = squareEl.childNodes[0]
+      imgageEl.classList.remove('square-img-highlight')
+    }
+  }
+
   // renderPieces() {
   //   this.pieces.forEach(piece => {
   //     if (!piece.isCaptured) {
@@ -114,26 +122,30 @@ class JanggiGame {
   // } 
 
   makeMove(start, end) {
-    const startPiece = this.board[start]
-    const endPiece = this.board[end]
-    if (this.gameOver) {
-      return {valid: false, response: `Game is already over.`}
-    } else if (!startPiece) {
-      return {valid: false, response: `There is no piece there.`}
-    } else if (startPiece.color !== this.nextColor) {
-      return {valid: false, response: `That piece does not belong to you.`}
-    } else if (!startPiece.getValidMoves(this.board).includes(end)) {
-      return {valid: false, response: `Not a valid end position for that piece.`}
+    try {
+      const startPiece = this.board[start]
+      const endPiece = this.board[end]
+      if (this.gameOver) {
+        return {valid: false, response: `Game is already over.`}
+      } else if (!startPiece) {
+        return {valid: false, response: `There is no piece there.`}
+      } else if (startPiece.color !== this.nextColor) {
+        return {valid: false, response: `That piece does not belong to you.`}
+      } else if (!startPiece.getValidMoves(this.board).includes(end)) {
+        return {valid: false, response: `Not a valid end position for that piece.`}
+      }
+      if (endPiece && endPiece !== startPiece) {
+        endPiece.isCaptured = true
+        endPiece.square = null
+      }
+      startPiece.square = end
+      this.board[start] = null
+      this.board[end] = startPiece
+      this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
+      return {valid: true, response: `Next turn: ${this.nextColor}`}
+    } catch(e) {
+      console.log(e)
+      return {valid: false, response: `There was an error.`}
     }
-    if (endPiece && endPiece !== startPiece) {
-      endPiece.isCaptured = true
-      endPiece.square = null
-    }
-    startPiece.square = end
-    this.board[start] = null
-    this.board[end] = startPiece
-    this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
-    return {valid: true, response: `Next turn: ${this.nextColor}`}
   }
-
 }
