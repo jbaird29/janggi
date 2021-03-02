@@ -12,11 +12,12 @@ document.querySelectorAll('.square').forEach(square => {
       moveEl.textContent = `Start square is ${square}. Select end square.`;
     } else if (!end) {
       end = square;
-      result = makeMove(start, end)
-      if (result) {
-        moveEl.textContent = `Move successful. Select start square.`;
+      const {valid, response} = game.makeMove(start, end)
+      if (valid) {
+        moveEl.textContent = `${response}`;
+        game.renderPieces()
       } else {
-        moveEl.textContent = `Move invalid. Try again.`;
+        moveEl.textContent = `${response}`;
       }
       start = null;
       end = null;

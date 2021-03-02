@@ -6,16 +6,47 @@ class Piece {
     this.isCaptured = isCaptured
   }
 
-  getValidMoves() {
+  getValidMoves(start, board) {
     switch (this.type) {
+      case 'soldier':
+        return this.soldierMoves(start, board);
       case 'chariot':
         return this.chariotMoves();
       case 'elephant':
         return this.elephantMoves();
-        case 'horse':
-          return this.horseMoves();
+      case 'horse':
+        return this.horseMoves();
     }
   }
+
+  soldierMoves(board) {
+    const start = this.square
+    const squares = []
+    // add left, right, and up/down (depending on color)
+    const directions = ['right', 'left']
+    this.color === 'blue' ? directions.push('up') : directions.push('down')
+    for (const direction of directions) {
+      const square = shiftDir(start, direction);
+      (square && isEmptyOrEnemy(board[square])) ? squares.push(square) : null
+    }
+    // add palace-specific moves
+    if (['d3', 'f3'].includes(start) && isEmptyOrEnemy(board['e2'])) {
+      squares.push('e2')
+    }
+    if (['d8', 'f8'].includes(start) && isEmptyOrEnemy(board['e9'])) {
+      squares.push('e9')
+    }
+    if (start === 'e2') {
+      isEmptyOrEnemy(board['d1']) ? squares.push('d1') : null
+      isEmptyOrEnemy(board['f1']) ? squares.push('f1') : null
+    }
+    if (start === 'e9') {
+      isEmptyOrEnemy(board['d10']) ? squares.push('d10') : null
+      isEmptyOrEnemy(board['f10']) ? squares.push('f10') : null
+    }
+    return squares
+  }
+
 
   chariotMoves() {
     return 'chariot'
@@ -34,6 +65,9 @@ class JanggiGame {
   constructor() {
     this.pieces = this.buildPieces()
     this.board = this.buildBoard()
+    this.nextColor = 'blue'
+    this.gameOver = false
+    this.winner = null
   }
 
   getPalace(color=null) {
@@ -148,17 +182,83 @@ class JanggiGame {
   }
 
   renderPieces() {
-    this.pieces.forEach(piece => {
-      const img = document.createElement('IMG');
-      img.setAttribute('src', `images/pieces/${piece.color}-${piece.type}.png`)
-      img.classList.add('piece')
-      document.querySelector(`#${piece.square}`).appendChild(img)
-    })
-  } 
+    for (const square in this.board) {
+      const piece = this.board[square]
+      const squareEl = document.getElementById(square)
+      const pieceEl = squareEl.childNodes[1]
+      pieceEl && squareEl.removeChild(pieceEl)  // remove the prior element
+      if (piece && !piece.isCaptured) {
+        const img = document.createElement('IMG');
+        img.setAttribute('src', `images/pieces/${piece.color}-${piece.type}.png`)
+        img.classList.add('piece')
+        document.querySelector(`#${square}`).appendChild(img)  
+      }
+    }
+  }
+
+  // renderPieces() {
+  //   this.pieces.forEach(piece => {
+  //     if (!piece.isCaptured) {
+  //       const img = document.createElement('IMG');
+  //       img.setAttribute('src', `images/pieces/${piece.color}-${piece.type}.png`)
+  //       img.classList.add('piece')
+  //       document.querySelector(`#${piece.square}`).appendChild(img)  
+  //     }
+  //   })
+  // } 
+
+  makeMove(start, end) {
+    const startPiece = this.board[start]
+    const endPiece = this.board[end]
+    if (this.gameOver) {
+      return {valid: false, response: `Game is already over.`}
+    } else if (!startPiece) {
+      return {valid: false, response: `There is no piece there.`}
+    } else if (startPiece.color !== this.nextColor) {
+      return {valid: false, response: `That piece does not belong to you.`}
+    } else if (!startPiece.getValidMoves(this.board).includes(end)) {
+      return {valid: false, response: `Not a valid end position for that piece.`}
+    }
+    if (endPiece && endPiece !== startPiece) {
+      endPiece.isCaptured = true
+      endPiece.square = null
+    }
+    startPiece.square = end
+    this.board[start] = null
+    this.board[end] = startPiece
+    this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
+    return {valid: true, response: `Next turn: ${this.nextColor}`}
+  }
 
 }
 
-function nextChar(c) { 
+const nextChar = (c) => { 
   return String.fromCharCode(c.charCodeAt(0) + 1); 
 }
 
+const shift = (square, vertical, horizontal) => {
+  const startLet = square.slice(0,1)
+  const startNum = square.slice(1)
+  const startOrd = startLet.charCodeAt(0)
+  if (!(startLet >= 'a' && startLet <= 'i' && startNum >= 1 && startNum <= 10)) {
+    return false
+  }
+  const endNum = startNum - vertical
+  const endOrd = startOrd + horizontal
+  const endLet = String.fromCharCode(endOrd)
+  if (!(endLet >= 'a' && endLet <= 'i' && endNum >= 1 && endNum <= 10)) {
+    return false
+  }
+  return endLet + endNum
+}
+
+const shiftDir = (square, direction) => {
+  if (direction === 'right') return shift(square, 0, 1);
+  if (direction === 'left') return shift(square, 0, -1);
+  if (direction === 'up') return shift(square, 1, 0);
+  if (direction === 'down') return shift(square, -1, 0);
+}
+
+const isEmptyOrEnemy = (potentialPiece) => {
+  return (potentialPiece === null || potentialPiece.color !== this.color)
+}
