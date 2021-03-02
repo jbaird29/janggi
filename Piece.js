@@ -6,8 +6,16 @@ class Piece {
     this.isCaptured = isCaptured
   }
 
+  isEmpty(potentialPiece) {
+    return potentialPiece === null
+  }
+
+  isEnemy(piece) {
+    return piece.color !== this.color
+  }
+
   isEmptyOrEnemy(potentialPiece) {
-    return (potentialPiece === null || potentialPiece.color !== this.color)
+    return (this.isEmpty(potentialPiece) || this.isEnemy(potentialPiece))
   }
 
   getValidMoves(board) {
@@ -17,7 +25,7 @@ class Piece {
       case 'cannon':
         return this.cannonMoves(board)
       case 'chariot':
-        return this.chariotMoves();
+        return this.chariotMoves(board);
       case 'elephant':
         return this.elephantMoves();
       case 'horse':
@@ -63,9 +71,9 @@ class Piece {
       let square = shiftDir(start, direction)  // shift the square by 1 in the given direction
       while (square && pieceCount < 2 && !containsCannon) {
         const piece = board[square]
-        if (pieceCount === 1 && piece === null) {
+        if (pieceCount === 1 && this.isEmpty(piece)) {
           moves.push(square)  // append if empty
-        } else if (pieceCount === 1 && piece.color !== this.color && piece.type !== 'cannon') {
+        } else if (pieceCount === 1 && this.isEnemy(piece) && piece.type !== 'cannon') {
           moves.push(square)  // append if it contains opposing piece that is not a cannon
         }
         if (piece !== null) {
@@ -83,7 +91,7 @@ class Piece {
       const centerIsCannon = board[center] !== null && board[center].type === 'cannon'
       const mirrorIsCannon = board[mirror] !== null && board[mirror].type === 'cannon'
       if (!centerIsCannon && !mirrorIsCannon) {
-        if (board[center] !== null && this.isEmptyOrEnemy(board[mirror])) {
+        if (!this.isEmpty(board[center]) && this.isEmptyOrEnemy(board[mirror])) {
           moves.push(mirror)
         }
       }
@@ -91,8 +99,46 @@ class Piece {
     return moves
   }
 
-  chariotMoves() {
-    return 'chariot'
+  chariotMoves(board) {
+    const start = this.square
+    const moves = []
+    // append the vertical and horizontal axes
+    for (const direction of ['up', 'right', 'down', 'left']) {
+      let pieceCount = 0
+      let square = shiftDir(start, direction)  // shift the square by 1 in the given direction
+      while (square && pieceCount === 0) {  // square will be False if it is off the range of the board
+        if (this.isEmpty(board[square])) {
+          moves.push(square)  // if square is empty, append it as an option
+        } else {
+          pieceCount += 1
+          this.isEnemy(board[square]) ? moves.push(square) : null
+        }
+        square = shiftDir(square, direction)  // do another shift
+      }
+    }
+    // if in the palace corners, check on adding the middle and the 'mirror' across diagonal
+    if (getPalaceCorners().includes(start)) {
+      const squareColor = getPalaceCorners('red').includes(start) ? 'red' : 'blue'
+      const center = getPalaceCenters(squareColor)
+      const mirror = mirrorSquare(start)
+      if (this.isEmptyOrEnemy(board[center])) {
+        moves.push(center) // # if center is empty or contains opposing color, append it
+      }
+      if (board[center] === null && this.isEmptyOrEnemy(board[mirror])) {
+        moves.push(mirror) // # if mirror is empty or contains opposing color, append it
+      }
+    }
+    // if in the palace center, check on adding the diagonals
+    if (getPalaceCenters().includes(start)) {
+      const squareColor = start === getPalaceCenters('red') ? 'red' : 'blue'
+      const corners = getPalaceCorners(squareColor)
+      corners.forEach(square => {
+        if (this.isEmptyOrEnemy(board[square])) {
+          moves.push(square)
+        }
+      })
+    }
+    return moves
   }
 
   elephantMoves() {
