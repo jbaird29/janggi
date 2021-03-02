@@ -314,7 +314,11 @@ class JanggiGame {
      * @param {string} start 
      * @param {string} end 
      */
-    makeMove(start, end) {
+    makeMove(start, end, pass=false) {
+      if (pass) {
+        this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
+        return {valid: true, response: `Next turn: ${this.nextColor}. Select start square.`}
+      }
       try {
         const startPiece = this.board[start]
         const endPiece = this.board[end]
@@ -340,7 +344,7 @@ class JanggiGame {
           }
         }
         // otherwise return valid response
-        return {valid: true, response: `Next turn: ${this.nextColor}`}
+        return {valid: true, response: `Next turn: ${this.nextColor}. Select start square.`}
       } catch(e) {
         console.log(e)
         return {valid: false, response: `There was an error.`}
