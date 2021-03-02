@@ -8,22 +8,31 @@ document.querySelectorAll('.square').forEach(square => {
   square.addEventListener('click', (e) => {
     const square = e.target.parentElement.id;
     if (!start && !end) {
-      start = square;
-      moveEl.textContent = `Start square is ${square}. Select end square.`;
-      const piece = game.board[start]
-      piece ? piece.renderSquareShading(game.board) : null
-    } else if (!end) {
-      game.clearSquareShading()
-      end = square;
-      const {valid, response} = game.makeMove(start, end)
+      const {valid, response} = game.isValidStart(square)
+      moveEl.textContent = `${response}`;
       if (valid) {
-        moveEl.textContent = `${response}`;
-        game.renderPieces()
+        start = square;
+        game.renderSquareShading(game.getPiece(start))
       } else {
-        moveEl.textContent = `${response}`;
+        start = null;  
       }
-      start = null;
-      end = null;
+    } else if (start && !end) {
+      game.clearSquareShading(game.getPiece(start))
+      end = square;
+      // short circuit - if the end contains a piece of the same color, change that to the new start
+      if (game.areSameColor(start, end)) {
+        start = end;
+        end = null;
+        game.renderSquareShading(game.getPiece(start))
+      } else {
+        const {valid, response} = game.makeMove(start, end)
+        moveEl.textContent = `${response}`;
+        start = null;
+        end = null;  
+        if (valid) {
+          game.renderGame()
+        } 
+      }
     }
   })
 })
@@ -44,4 +53,4 @@ const makeMove = (start, end) => {
 }
 
 const game = new JanggiGame()
-game.renderPieces()
+game.renderGame()
