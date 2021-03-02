@@ -30,6 +30,12 @@ class Piece {
         return this.elephantMoves(board);
       case 'horse':
         return this.horseMoves(board);
+      case 'guard':
+        return this.guardGeneralMoves(board);
+      case 'general':
+        return this.guardGeneralMoves(board);
+      default:
+        return []
     }
   }
 
@@ -197,6 +203,36 @@ class Piece {
         })
       }
     })
+    return moves
+  }
+
+  guardGeneralMoves(board) {
+    const start = this.square
+    const moves = []
+    const palace = getPalace(this.color)
+    const corners = getPalaceCorners(this.color)
+    const center = getPalaceCenters(this.color)    
+    // # start the listing the squares - 1 spot up/down/left/right IFF that spot is inside palace
+    for (const direction of ['up', 'right', 'down', 'left']) {
+      const square = shiftDir(start, direction)
+      if (square && palace.includes(square) && this.isEmptyOrEnemy(board[square])) {
+        moves.push(square)
+      }
+    }
+    // # if start in palace corners, add the center
+    if (corners.includes(start)) {
+      if (this.isEmptyOrEnemy(board[center])) {
+        moves.push(center)
+      }
+    }
+    // # if start is center, add the corners
+    if (start === center) {
+      for (const corner of corners) {
+        if (this.isEmptyOrEnemy(board[corner])) {
+          moves.push(corner)
+        }
+      }
+    }
     return moves
   }
 
