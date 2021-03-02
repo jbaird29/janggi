@@ -27,9 +27,9 @@ class Piece {
       case 'chariot':
         return this.chariotMoves(board);
       case 'elephant':
-        return this.elephantMoves();
+        return this.elephantMoves(board);
       case 'horse':
-        return this.horseMoves();
+        return this.horseMoves(board);
     }
   }
 
@@ -141,8 +141,37 @@ class Piece {
     return moves
   }
 
-  elephantMoves() {
-    return 'elephant'
+  elephantMoves(board) {
+    const start = this.square
+    const moves = []
+    // loop through the squares 1 up, 1 down, 1 left, 1 right
+    const verticies = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    verticies.forEach(pair => {
+      const [vert, horz] = pair;
+      const square = shift(start, vert, horz)
+      // # if square at 1 step up/down/left/right is empty, continue
+      if (square && this.isEmpty(board[square])) {
+        // # from 1 up/down/left/right, do a positive and negative jump
+        const posJump = [vert * 2 + horz, horz * 2 + vert]
+        const negJump = [vert * 2 - horz, horz * 2 - vert]
+        const jumps = [posJump, negJump]
+        jumps.forEach(pair => {
+          const [vert, horz] = pair;
+          // # if square at pos/neg jump is empty, continue
+          const square = shift(start, vert, horz)
+          if (square && this.isEmpty(board[square])) {
+            // # do another jump of the same type (e.g. +1 more right, +1 more up)
+            const finalVert = vert > 0 ? (vert + 1) : (vert - 1)
+            const finalHorz = horz > 0 ? (horz + 1) : (horz - 1)
+            const square = shift(start, finalVert, finalHorz)
+            if (square && this.isEmptyOrEnemy(board[square])) {
+              moves.push(square)
+            }
+          }
+        })
+      }
+    })
+    return moves
   }
 
   horseMoves() {
