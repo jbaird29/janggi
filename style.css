@@ -39,8 +39,7 @@ button {
 .container-game {
   margin: auto;
   display: flex;
-  width: 562px;
-  /* box-shadow: 5px 5px 5px black; */
+  width: 564px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
 }
 .container-col-pieces {
