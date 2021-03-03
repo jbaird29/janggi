@@ -44,7 +44,7 @@ class JanggiGame {
       if (!this.gameOver) {
         return `Next turn: <span class="color-${this.nextColor}">${this.nextColor}</span>. Select start square.`
       } else {
-        return `Game over! <span class="color-${this.nextColor}">${this.winner}</span> won!`
+        return `Game over: <span class="color-${this.winner}">${this.winner}</span> won!`
       }
     }
   
