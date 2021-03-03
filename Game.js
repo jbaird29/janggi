@@ -297,6 +297,7 @@ class JanggiGame {
           if (this.isInCheckmate(this.nextColor)) {
             this.gameOver = true
             this.winner = this.nextColor === 'red' ? 'blue' : 'red'
+            this.saveGave()
             return {valid: true, response: this.getHeaderText()}
           }
         }
