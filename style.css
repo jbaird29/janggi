@@ -1,7 +1,11 @@
 body {
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  background-image: url("images/background/table.jpg")
+  background-image: url("images/background/table-3-edit.jpg");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+  background-blend-mode: luminosity;
 }
 h1 {
   margin-bottom: 5px;
