@@ -260,7 +260,7 @@ class JanggiGame {
     isValidStart(start) {
       const startPiece = this.board[start]
       if (this.gameOver) {
-        return {valid: false, response: `Game is already over.`}
+        return {valid: false, response: this.getHeaderText()}
       } else if (!startPiece) {
         return {valid: false, response: this.getHeaderText()}
       } else if (startPiece.color !== this.nextColor) {
