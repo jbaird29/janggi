@@ -279,6 +279,7 @@ class JanggiGame {
     makeMove(start, end, pass=false) {
       if (pass) {
         this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
+        this.saveGave()
         return {valid: true, response: this.getHeaderText()}
       }
       try {
