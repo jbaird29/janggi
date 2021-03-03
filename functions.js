@@ -73,3 +73,75 @@ const getPalaceCenters = (color=null) => {
     return ['e2', 'e9']
   }
 }
+
+// ---------------------------------------------------------------
+// Helper functions for initializing the game
+// ---------------------------------------------------------------
+const getStartGameProps = () => {
+  const startPieces = [
+    new Piece('red', 'chariot', 'a1'),
+    new Piece('red', 'chariot', 'i1'),
+    new Piece('red', 'elephant', 'b1'),
+    new Piece('red', 'elephant', 'g1'),
+    new Piece('red', 'horse', 'c1'),
+    new Piece('red', 'horse', 'h1'),
+    new Piece('red', 'guard', 'd1'),
+    new Piece('red', 'guard', 'f1'),
+    new Piece('red', 'cannon', 'b3'),
+    new Piece('red', 'cannon', 'h3'),
+    new Piece('red', 'soldier', 'a4'),
+    new Piece('red', 'soldier', 'c4'),
+    new Piece('red', 'soldier', 'e4'),
+    new Piece('red', 'soldier', 'g4'),
+    new Piece('red', 'soldier', 'i4'),
+    new Piece('red', 'general', 'e2'),
+    new Piece('blue', 'chariot', 'a10'),
+    new Piece('blue', 'chariot', 'i10'),
+    new Piece('blue', 'elephant', 'b10'),
+    new Piece('blue', 'elephant', 'g10'),
+    new Piece('blue', 'horse', 'c10'),
+    new Piece('blue', 'horse', 'h10'),
+    new Piece('blue', 'guard', 'd10'),
+    new Piece('blue', 'guard', 'f10'),
+    new Piece('blue', 'cannon', 'b8'),
+    new Piece('blue', 'cannon', 'h8'),
+    new Piece('blue', 'soldier', 'a7'),
+    new Piece('blue', 'soldier', 'c7'),
+    new Piece('blue', 'soldier', 'e7'),
+    new Piece('blue', 'soldier', 'g7'),
+    new Piece('blue', 'soldier', 'i7'),
+    new Piece('blue', 'general', 'e9'),
+  ]
+  return {
+    pieces: startPieces,
+    nextColor: 'blue',
+    gameOver: false,
+    winner: null
+  }
+}
+
+const getSavedGameProps = () => {
+  const gamePropsJSON = localStorage.getItem('gameProps');
+  try {
+    return gamePropsJSON ? JSON.parse(gamePropsJSON) : null;
+  } catch(e) {
+    console.log(e.message);
+    return null
+  }
+}
+
+const getGameProps = () => {
+  const savedGameProps = getSavedGameProps()
+  if (savedGameProps) {
+    // if gameProps were loaded from browser storage, clean the Pieces objects
+    let cleanedPieces = []
+    savedGameProps.pieces.forEach(piece => {
+      cleanedPieces.push(new Piece(piece.color, piece.type, piece.square, piece.isCaptured))
+    })
+    savedGameProps.pieces = cleanedPieces
+    return savedGameProps
+  } else {
+    // otherwise build an empty game
+    return getStartGameProps()
+  }
+}

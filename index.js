@@ -1,8 +1,8 @@
 const moveEl = document.querySelector('#current-move')
 
-moveEl.textContent = 'Next turn: blue. Select start square'
-let game = new JanggiGame()
+let game = new JanggiGame(getGameProps())
 game.renderGame()
+moveEl.innerHTML = game.getHeaderText()
 
 let start = null;
 let end = null;
@@ -12,7 +12,7 @@ document.querySelectorAll('.square').forEach(square => {
     const square = e.target.parentElement.id;
     if (!start && !end) {
       const {valid, response} = game.isValidStart(square)
-      moveEl.textContent = `${response}`;
+      moveEl.innerHTML = `${response}`;
       if (valid) {
         start = square;
         game.renderSquareShading(game.getPiece(start))
@@ -29,7 +29,7 @@ document.querySelectorAll('.square').forEach(square => {
         game.renderSquareShading(game.getPiece(start))
       } else {
         const {valid, response} = game.makeMove(start, end)
-        moveEl.textContent = `${response}`;
+        moveEl.innerHTML = `${response}`;
         start = null;
         end = null;  
         if (valid) {
@@ -45,7 +45,7 @@ document.getElementById('pass-btn').addEventListener('click', (e) => {
     game.clearSquareShading(game.getPiece(start))
   }
   const {valid, response} = game.makeMove(start=null, end=null, pass=true);
-  moveEl.textContent = `${response}`;
+  moveEl.innerHTML = `${response}`;
   start = null;
   end = null;
   game.renderGame();
@@ -55,7 +55,8 @@ document.getElementById('reset-btn').addEventListener('click', (e) => {
   if (start) {
     game.clearSquareShading(game.getPiece(start))
   }
-  moveEl.textContent = 'Next turn: blue. Select start square'
-  game = new JanggiGame()
+  game = new JanggiGame(getStartGameProps())
+  game.saveGave()
   game.renderGame()
+  moveEl.innerHTML = game.getHeaderText()
 })

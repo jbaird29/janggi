@@ -1,67 +1,28 @@
 class JanggiGame {
-    constructor() {
-      this.pieces = this.buildPieces()
+    constructor(gameProps) {
+      this.pieces = gameProps.pieces
+      this.nextColor = gameProps.nextColor
+      this.gameOver = gameProps.gameOver
+      this.winner = gameProps.winner
       this.board = this.buildBoard()
-      this.nextColor = 'blue'
-      this.gameOver = false
-      this.winner = null
     }
   
-    getSavedPieces() {
-      // const piecesJSON = localStorage.getItem('pieces');
-      const piecesJSON = null
-      try {
-        return piecesJSON ? JSON.parse(piecesJSON) : null;
-      } catch(e) {
-        console.log(e.message);
-        return null
+    saveGave() {
+      const gameProps = {
+        pieces: this.pieces,
+        nextColor: this.nextColor,
+        gameOver: this.gameOver,
+        winner: this.winner
       }
+      localStorage.setItem('gameProps',JSON.stringify(gameProps))
     }
-  
-    buildPieces() {
-      let pieces = []
-      const savedPieces = this.getSavedPieces()
-      if (savedPieces) {
-        savedPieces.forEach(piece => {
-          pieces.push(new Piece(piece.color, piece.type, piece.square, piece.isCaptured))
-        })
-      } else {
-        pieces = [
-          new Piece('red', 'chariot', 'a1'),
-          new Piece('red', 'chariot', 'i1'),
-          new Piece('red', 'elephant', 'b1'),
-          new Piece('red', 'elephant', 'g1'),
-          new Piece('red', 'horse', 'c1'),
-          new Piece('red', 'horse', 'h1'),
-          new Piece('red', 'guard', 'd1'),
-          new Piece('red', 'guard', 'f1'),
-          new Piece('red', 'cannon', 'b3'),
-          new Piece('red', 'cannon', 'h3'),
-          new Piece('red', 'soldier', 'a4'),
-          new Piece('red', 'soldier', 'c4'),
-          new Piece('red', 'soldier', 'e4'),
-          new Piece('red', 'soldier', 'g4'),
-          new Piece('red', 'soldier', 'i4'),
-          new Piece('red', 'general', 'e2'),
-          new Piece('blue', 'chariot', 'a10'),
-          new Piece('blue', 'chariot', 'i10'),
-          new Piece('blue', 'elephant', 'b10'),
-          new Piece('blue', 'elephant', 'g10'),
-          new Piece('blue', 'horse', 'c10'),
-          new Piece('blue', 'horse', 'h10'),
-          new Piece('blue', 'guard', 'd10'),
-          new Piece('blue', 'guard', 'f10'),
-          new Piece('blue', 'cannon', 'b8'),
-          new Piece('blue', 'cannon', 'h8'),
-          new Piece('blue', 'soldier', 'a7'),
-          new Piece('blue', 'soldier', 'c7'),
-          new Piece('blue', 'soldier', 'e7'),
-          new Piece('blue', 'soldier', 'g7'),
-          new Piece('blue', 'soldier', 'i7'),
-          new Piece('blue', 'general', 'e9'),
-        ]
-      }
-      return pieces
+
+    buildBoard() {
+      let board = this.buildEmpytyBoard()
+      this.pieces.filter(piece => !piece.isCaptured).forEach(piece => {
+        board[piece.square] = piece
+      })
+      return board
     }
   
     buildEmpytyBoard() {
@@ -78,13 +39,13 @@ class JanggiGame {
       }
       return board
     }
-  
-    buildBoard() {
-      let board = this.buildEmpytyBoard()
-      this.pieces.forEach(piece => {
-        board[piece.square] = piece
-      })
-      return board
+
+    getHeaderText() {
+      if (!this.gameOver) {
+        return `Next turn: <span class="color-${this.nextColor}">${this.nextColor}</span>. Select start square.`
+      } else {
+        return `Game over! <span class="color-${this.nextColor}">${this.winner}</span> won!`
+      }
     }
   
     /**
@@ -301,13 +262,14 @@ class JanggiGame {
       if (this.gameOver) {
         return {valid: false, response: `Game is already over.`}
       } else if (!startPiece) {
-        return {valid: false, response: `Invalid: There is no piece there.`}
+        return {valid: false, response: this.getHeaderText()}
       } else if (startPiece.color !== this.nextColor) {
-        return {valid: false, response: `Invalid: That piece does not belong to you.`}
+        return {valid: false, response: this.getHeaderText()}
       } else {
-        return {valid: true, response: `Start square is ${start}. Select end square.`}
+        return {valid: true, response: `Start square: ${start}. Select end square.`}
       }
     }
+
     /**
      * Given a start and end square, determines if that move is valid and updates board / game state if so
      * returns an object of {valid: true || false, response: 'response text message'}
@@ -317,20 +279,14 @@ class JanggiGame {
     makeMove(start, end, pass=false) {
       if (pass) {
         this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
-        return {valid: true, response: `Next turn: ${this.nextColor}. Select start square.`}
+        return {valid: true, response: this.getHeaderText()}
       }
       try {
         const startPiece = this.board[start]
         const endPiece = this.board[end]
         // determine if the move is falid
-        if (this.gameOver) {
-          return {valid: false, response: `Game is already over.`}
-        } else if (!startPiece) {
-          return {valid: false, response: `Invalid: There is no piece there.`}
-        } else if (startPiece.color !== this.nextColor) {
-          return {valid: false, response: `Invalid: That piece does not belong to you.`}
-        } else if (!this.getValidMoves(startPiece).includes(end)) {
-          return {valid: false, response: `Invalid: not a valid end position for that piece.`}
+        if (!this.getValidMoves(startPiece).includes(end)) {
+          return {valid: false, response: this.getHeaderText()}
         }
         // if valid, update the board and game state
         this.performMove(start, end, startPiece, endPiece)
@@ -340,11 +296,12 @@ class JanggiGame {
           if (this.isInCheckmate(this.nextColor)) {
             this.gameOver = true
             this.winner = this.nextColor === 'red' ? 'blue' : 'red'
-            return {valid: true, response: `Game over: ${this.winner} wins.`}
+            return {valid: true, response: this.getHeaderText()}
           }
         }
-        // otherwise return valid response
-        return {valid: true, response: `Next turn: ${this.nextColor}. Select start square.`}
+        // otherwise save game and return valid response
+        this.saveGave()
+        return {valid: true, response: this.getHeaderText()}
       } catch(e) {
         console.log(e)
         return {valid: false, response: `There was an error.`}
