@@ -44,7 +44,7 @@ class JanggiGame {
       if (!this.gameOver) {
         return `Next turn: <span class="color-${this.nextColor}">${this.nextColor}</span>. Select start square.`
       } else {
-        return `Game over! <span class="color-${this.nextColor}">${this.winner}</span> won!`
+        return `Game over: <span class="color-${this.winner}">${this.winner}</span> won!`
       }
     }
   
@@ -260,7 +260,7 @@ class JanggiGame {
     isValidStart(start) {
       const startPiece = this.board[start]
       if (this.gameOver) {
-        return {valid: false, response: `Game is already over.`}
+        return {valid: false, response: this.getHeaderText()}
       } else if (!startPiece) {
         return {valid: false, response: this.getHeaderText()}
       } else if (startPiece.color !== this.nextColor) {
@@ -279,6 +279,7 @@ class JanggiGame {
     makeMove(start, end, pass=false) {
       if (pass) {
         this.nextColor = this.nextColor === 'red' ? 'blue' : 'red'
+        this.saveGave()
         return {valid: true, response: this.getHeaderText()}
       }
       try {
@@ -296,6 +297,7 @@ class JanggiGame {
           if (this.isInCheckmate(this.nextColor)) {
             this.gameOver = true
             this.winner = this.nextColor === 'red' ? 'blue' : 'red'
+            this.saveGave()
             return {valid: true, response: this.getHeaderText()}
           }
         }

@@ -5,4 +5,4 @@ Per the class project instructions, I initially built the program in Python with
 
 Note per the school project rubric, certain rules are excluded from this implementation. For example, generals are permitted to face each other from across the board.
 
-Play the game here: 
+Play the game here: https://jbaird29.github.io/janggi/
